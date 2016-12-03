@@ -1,0 +1,17 @@
+package: github.com/wfarr/k8s-event-logger
+import:
+- package: github.com/DataDog/datadog-go
+  version: ^1.0.0
+  subpackages:
+  - statsd
+- package: k8s.io/client-go
+  version: ^2.0.0-alpha.0
+  subpackages:
+  - kubernetes
+  - pkg/api
+  - pkg/api/v1
+  - pkg/fields
+  - plugin/pkg/client/auth/gcp
+  - rest
+  - tools/cache
+  - tools/clientcmd
