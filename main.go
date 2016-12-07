@@ -24,16 +24,14 @@ import (
 
 func main() {
 	kubeconfig := flag.String("kubeconfig", "", "Path to a kube config. Only required if out-of-cluster.")
-	bugsnagAPIKey := flag.String("bugsnag-api-key", "", "Enables reporting non-Normal events to bugsnag using the given API key.")
-	statsd := flag.String("statsd", "", "URI to send statsd metrics to. Must be dogstatsd compatible.")
 	flag.Parse()
 
-	if *bugsnagAPIKey != "" {
-		configureBugsnag(*bugsnagAPIKey)
+	if os.Getenv("BUGSNAG_API_KEY") != "" {
+		configureBugsnag(os.Getenv("BUGSNAG_API_KEY"))
 	}
 
-	if *statsd != "" {
-		configureDatadog(*statsd)
+	if os.Getenv("STATSD_URL") != "" {
+		configureDatadog(os.Getenv("STATSD_URL"))
 	}
 
 	config, err := buildConfig(*kubeconfig)
@@ -56,13 +54,13 @@ func main() {
 	create := func(obj interface{}) {
 		event := obj.(*v1.Event)
 
-		if *bugsnagAPIKey != "" {
+		if os.Getenv("BUGSNAG_API_KEY") != "" {
 			if err := sendEventToBugsnag(event); err != nil {
 				log.WithError(err)
 			}
 		}
 
-		if *statsd != "" {
+		if os.Getenv("STATSD_URL") != "" {
 			if err := sendEventToDatadog(event); err != nil {
 				log.WithError(err)
 			}
