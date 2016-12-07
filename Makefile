@@ -3,7 +3,7 @@ image = k8s-event-logger
 builddir = /app/src/github.com/wfarr/$(image)
 
 default:
-	docker build -t $(image) -f Dockerfile.buildenv .
+	docker build -t $(image) -f Dockerfile.build .
 	docker run --rm -e GOPATH=/app -v $(PWD):$(builddir) -w $(builddir) $(image):latest go build -o ./bin/k8s-event-logger .
 
 build-release: default
