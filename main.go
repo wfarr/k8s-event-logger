@@ -2,7 +2,6 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"os"
 	"os/signal"
 	"syscall"
@@ -27,6 +26,7 @@ func main() {
 	flag.Parse()
 
 	if os.Getenv("BUGSNAG_API_KEY") != "" {
+		log.Info("Configuring bugsnag logger")
 		configureBugsnag(
 			os.Getenv("BUGSNAG_API_KEY"),
 			os.Getenv("BUGSNAG_RELEASE_STAGE"),
@@ -34,6 +34,7 @@ func main() {
 	}
 
 	if os.Getenv("STATSD_URL") != "" {
+		log.Info("Configuring statsd logger")
 		configureDatadog(os.Getenv("STATSD_URL"))
 	}
 
@@ -83,11 +84,12 @@ func main() {
 		})
 
 	go controller.Run(stop)
+	log.Info("Starting informer...")
 
 	signals := make(chan os.Signal, 1)
 	signal.Notify(signals, syscall.SIGINT, syscall.SIGTERM)
 	s := <-signals
-	fmt.Printf("received signal %#v, exiting...\n", s)
+	log.Infof("received signal %#v, exiting...\n", s)
 	close(stop)
 	os.Exit(0)
 }
