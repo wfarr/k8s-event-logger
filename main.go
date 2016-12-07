@@ -88,10 +88,15 @@ func main() {
 
 	signals := make(chan os.Signal, 1)
 	signal.Notify(signals, syscall.SIGINT, syscall.SIGTERM)
-	s := <-signals
-	log.Infof("received signal %#v, exiting...\n", s)
-	close(stop)
-	os.Exit(0)
+
+	for {
+		select {
+		case s := <-signals:
+			log.Infof("received signal %#v, exiting...\n", s)
+			close(stop)
+			os.Exit(0)
+		}
+	}
 }
 
 func buildConfig(kubeconfig string) (*rest.Config, error) {
