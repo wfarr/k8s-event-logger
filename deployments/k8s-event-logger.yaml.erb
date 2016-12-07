@@ -14,7 +14,7 @@ spec:
       - name: k8s-event-logger
         image: dubs/k8s-event-logger:<%= ENV["SHA"] || "latest" %>
         command:
-          - k8s-event-logger
+          - /app/bin/k8s-event-logger
         env:
         - name: BUGSNAG_API_KEY
           valueFrom:
