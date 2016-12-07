@@ -89,6 +89,8 @@ func main() {
 	signals := make(chan os.Signal, 1)
 	signal.Notify(signals, syscall.SIGINT, syscall.SIGTERM)
 
+	log.Info("registered signal handler")
+
 	for {
 		select {
 		case s := <-signals:
