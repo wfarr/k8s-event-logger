@@ -1,0 +1,27 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: k8s-event-logger
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: k8s-event-logger
+    spec:
+      containers:
+      - name: k8s-event-logger
+        image: dubs/k8s-event-logger:<%= ENV["SHA"] || "latest" %>
+        command:
+          - k8s-event-logger
+        env:
+        - name: BUGSNAG_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: bugsnag
+              key: api-key
+        - name: STATSD_URL
+          value: statsd:8125
+        - name: BUGSNAG_RELEASE_STAGE
+          value: development

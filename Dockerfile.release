@@ -1,0 +1,8 @@
+FROM alpine:3.4
+MAINTAINER Will Farrington <wcfarrington@gmail.com> (@wfarr)
+
+ENV PATH="/app/bin:$PATH"
+
+RUN apk add --update ca-certificates
+
+COPY bin /app/bin
