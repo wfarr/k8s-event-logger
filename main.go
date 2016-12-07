@@ -27,7 +27,10 @@ func main() {
 	flag.Parse()
 
 	if os.Getenv("BUGSNAG_API_KEY") != "" {
-		configureBugsnag(os.Getenv("BUGSNAG_API_KEY"))
+		configureBugsnag(
+			os.Getenv("BUGSNAG_API_KEY"),
+			os.Getenv("BUGSNAG_RELEASE_STAGE"),
+		)
 	}
 
 	if os.Getenv("STATSD_URL") != "" {

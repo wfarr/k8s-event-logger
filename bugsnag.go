@@ -2,17 +2,12 @@ package main
 
 import (
 	"fmt"
-	"os"
 
 	"github.com/bugsnag/bugsnag-go"
 	"k8s.io/client-go/pkg/api/v1"
 )
 
 func configureBugsnag(apiKey, releaseStage string) {
-	if os.Getenv("BUGSNAG_RELEASE_STAGE") != "" {
-		releaseStage = os.Getenv("BUGSNAG_RELEASE_STAGE")
-	}
-
 	bugsnag.Configure(bugsnag.Configuration{
 		APIKey:       apiKey,
 		ReleaseStage: releaseStage,
