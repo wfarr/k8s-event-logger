@@ -27,25 +27,26 @@ func main() {
 
 	if os.Getenv("BUGSNAG_API_KEY") != "" {
 		log.Info("Configuring bugsnag logger")
-		configureBugsnag(
-			os.Getenv("BUGSNAG_API_KEY"),
-			os.Getenv("BUGSNAG_RELEASE_STAGE"),
-		)
+		if err := configureBugsnag(os.Getenv("BUGSNAG_API_KEY"), os.Getenv("BUGSNAG_RELEASE_STAGE")); err != nil {
+			log.WithError(err).Fatal("Exiting...")
+		}
 	}
 
 	if os.Getenv("STATSD_URL") != "" {
 		log.Info("Configuring statsd logger")
-		configureDatadog(os.Getenv("STATSD_URL"))
+		if err := configureDatadog(os.Getenv("STATSD_URL")); err != nil {
+			log.WithError(err).Fatal("Exiting...")
+		}
 	}
 
 	config, err := buildConfig(*kubeconfig)
 	if err != nil {
-		panic(err)
+		log.WithError(err).Fatal("Exiting...")
 	}
 
 	clientset, err := kubernetes.NewForConfig(config)
 	if err != nil {
-		panic(err)
+		log.WithError(err).Fatal("Exiting...")
 	}
 
 	stop := make(chan struct{}, 1)

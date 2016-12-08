@@ -7,11 +7,12 @@ import (
 	"k8s.io/client-go/pkg/api/v1"
 )
 
-func configureBugsnag(apiKey, releaseStage string) {
+func configureBugsnag(apiKey, releaseStage string) error {
 	bugsnag.Configure(bugsnag.Configuration{
 		APIKey:       apiKey,
 		ReleaseStage: releaseStage,
 	})
+	return nil
 }
 
 func sendEventToBugsnag(event *v1.Event) error {
