@@ -32,13 +32,6 @@ func main() {
 		}
 	}
 
-	if os.Getenv("STATSD_URL") != "" {
-		log.Info("Configuring statsd logger")
-		if err := configureDatadog(os.Getenv("STATSD_URL")); err != nil {
-			log.WithError(err).Fatal("Exiting...")
-		}
-	}
-
 	config, err := buildConfig(*kubeconfig)
 	if err != nil {
 		log.WithError(err).Fatal("Exiting...")

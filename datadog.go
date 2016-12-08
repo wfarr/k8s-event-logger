@@ -2,29 +2,14 @@ package main
 
 import (
 	"fmt"
+	"os"
 
-	"github.com/DataDog/datadog-go/statsd"
+	dogstatsd "github.com/Shopify/go-dogstatsd"
 	"k8s.io/client-go/pkg/api/v1"
 )
 
-var (
-	statsdClient statsd.Client
-)
-
-func configureDatadog(uri string) error {
-	statsdClient, err := statsd.New(uri)
-	if err != nil {
-		return err
-	}
-
-	statsdClient.Namespace = "k8s-event-logger"
-	// c.Tags = append(c.Tags, fmt.Sprintf("cluster=%s", event.ClusterName))
-	return nil
-}
-
 func sendEventToDatadog(event *v1.Event) error {
-	datadogEvent := statsd.NewEvent(event.Reason, event.Message)
-	datadogEvent.Tags = []string{
+	tags := []string{
 		fmt.Sprintf("event-type=%s", event.Type),
 		fmt.Sprintf("event-reason=%s", event.Reason),
 		fmt.Sprintf("event-source=%s", event.Source),
@@ -33,5 +18,14 @@ func sendEventToDatadog(event *v1.Event) error {
 		fmt.Sprintf("involved-object-namespace=%s", event.InvolvedObject.Namespace),
 	}
 
-	return statsdClient.Event(datadogEvent)
+	statsdClient, err := dogstatsd.New(os.Getenv("STATSD_URL"), &dogstatsd.Context{
+		Namespace: "k8s-event-logger.",
+	})
+	defer statsdClient.Close()
+
+	if err != nil {
+		return err
+	}
+
+	return statsdClient.Event(event.Reason, event.Message, tags)
 }
