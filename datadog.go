@@ -12,7 +12,7 @@ var (
 )
 
 func configureDatadog(uri string) error {
-	statsdClient, err := statsd.New("127.0.0.1:8125")
+	statsdClient, err := statsd.New(uri)
 	if err != nil {
 		return err
 	}
