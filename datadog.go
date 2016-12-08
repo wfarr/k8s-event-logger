@@ -10,12 +10,12 @@ import (
 
 func sendEventToDatadog(event *v1.Event) error {
 	tags := []string{
-		fmt.Sprintf("event-type=%s", event.Type),
-		fmt.Sprintf("event-reason=%s", event.Reason),
-		fmt.Sprintf("event-source=%s", event.Source),
-		fmt.Sprintf("involved-object-kind=%s", event.InvolvedObject.Kind),
-		fmt.Sprintf("involved-object-name=%s", event.InvolvedObject.Name),
-		fmt.Sprintf("involved-object-namespace=%s", event.InvolvedObject.Namespace),
+		fmt.Sprintf("event-type:%s", event.Type),
+		fmt.Sprintf("event-reason:%s", event.Reason),
+		fmt.Sprintf("event-source:%s", event.Source),
+		fmt.Sprintf("involved-object-kind:%s", event.InvolvedObject.Kind),
+		fmt.Sprintf("involved-object-name:%s", event.InvolvedObject.Name),
+		fmt.Sprintf("involved-object-namespace:%s", event.InvolvedObject.Namespace),
 	}
 
 	statsdClient, err := dogstatsd.New(os.Getenv("STATSD_URL"), &dogstatsd.Context{
