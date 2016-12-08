@@ -71,12 +71,35 @@ func main() {
 		}
 	}
 
+	update := func(old interface{}, obj interface{}) {
+		event := obj.(*v1.Event)
+
+		if os.Getenv("BUGSNAG_API_KEY") != "" {
+			log.WithFields(log.Fields{"event-uid": event.UID}).Debug("Sending event to bugsnag")
+			if err := sendEventToBugsnag(event); err != nil {
+				log.WithError(err)
+			}
+		}
+
+		if os.Getenv("STATSD_URL") != "" {
+			log.WithFields(log.Fields{"event-uid": event.UID}).Debug("Sending event to statsd")
+			if err := sendEventToDatadog(event); err != nil {
+				log.WithError(err)
+			}
+		}
+
+		if err := sendEventToSTDOUT(event); err != nil {
+			log.WithError(err)
+		}
+	}
+
 	_, controller := cache.NewInformer(
 		source,
 		&v1.Event{},
 		time.Second*0,
 		cache.ResourceEventHandlerFuncs{
-			AddFunc: create,
+			AddFunc:    create,
+			UpdateFunc: update,
 		})
 
 	go controller.Run(stop)
