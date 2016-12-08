@@ -5,11 +5,14 @@ import (
 
 	"github.com/bugsnag/bugsnag-go"
 	"k8s.io/client-go/pkg/api/v1"
+
+	log "github.com/Sirupsen/logrus"
 )
 
 func configureBugsnag(apiKey, releaseStage string) error {
 	bugsnag.Configure(bugsnag.Configuration{
 		APIKey:       apiKey,
+		Logger:       log.StandardLogger(),
 		ReleaseStage: releaseStage,
 	})
 	return nil
