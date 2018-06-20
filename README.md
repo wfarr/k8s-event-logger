@@ -23,4 +23,10 @@ $ kubectl create secret generic bugsnag --from-literal=api-key=MYSECRETAPIKEY
 ```
 
 To enable Statsd reporting, set `STATSD_URL` in your ENV.
-The included sample deployment YAML expects this to be `statsd:8125` (you have a service named statsd running on UDP 8125). 
+The included sample deployment YAML expects this to be `statsd:8125` (you have a service named statsd running on UDP 8125).
+
+## Permissions 
+
+You have to create a service account in your cluster and grant permissions to it, in order to list and watch
+events with the logger. To do so, create service account, clusterrole and binding as shown in the deploymnet folder in
+this repo.
