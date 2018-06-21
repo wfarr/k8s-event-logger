@@ -10,6 +10,7 @@ spec:
       labels:
         app: k8s-event-logger
     spec:
+      serviceAccountName: k8s-event-logger
       containers:
       - name: k8s-event-logger
         image: dubs/k8s-event-logger:<%= ENV["SHA"] || "latest" %>
